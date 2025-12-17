@@ -3,7 +3,7 @@ substitutions:
   friendly_name: 'Meter Monitor'
 
   pulse_pin: GPIO5
-  led_pin: GPIO0
+  led_pin: GPIO32 # Special case for LED attached to wifi chip
 
 esphome:
   name: '${device_name}'
