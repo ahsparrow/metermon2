@@ -1,0 +1,102 @@
+substitutions:
+  device_name: metermon
+  friendly_name: 'Meter Monitor'
+
+  pulse_pin: GPIO5
+  led_pin: GPIO0
+
+esphome:
+  name: '${device_name}'
+
+rp2040:
+  board: rpipicow
+
+# XXX Test only
+#esp32:
+#  variant: esp32
+#  framework:
+#    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ''
+
+# Enable over-the-air upgrade
+ota:
+- platform: esphome
+  password: ''
+
+# Wifi settings
+wifi:
+  ssid: !secret wifi-network
+  password: !secret wifi-password
+  reboot_timeout: 5min
+
+  # Enable fallback hotspot in case wifi connection fails
+  ap:
+    ssid: '${friendly_name} Fallback Hotspot'
+    password: !secret hotspot-password
+
+sensor:
+- platform: pulse_meter
+  id: sensor_energy_pulse_meter
+  name: '${friendly_name} - Power Consumption'
+  icon: mdi:flash-outline
+
+  pin: '${pulse_pin}'
+
+  state_class: measurement
+  device_class: power
+  unit_of_measurement: W
+  accuracy_decimals: 0
+  filters:
+  - multiply: 15 # (60s / 4000) * (1000W / 1kW)
+  - throttle_average: 5s
+
+  on_raw_value:
+    then:
+    - light.toggle:
+        id: light_led
+
+  total:
+    id: sensor_total_energy
+    name: '${friendly_name} - Total Energy'
+    icon: mdi:circle-slice-3
+    unit_of_measurement: Wh
+    state_class: total_increasing
+    device_class: energy
+    accuracy_decimals: 0
+    filters:
+    - multiply: 0.25 # 1000 Wh / 4000
+    - throttle: 5min
+
+- platform: wifi_signal
+  name: 'WiFi Signal'
+  entity_category: 'diagnostic'
+
+text_sensor:
+- platform: wifi_info
+  ip_address:
+    name: 'IP address'
+    icon: mdi:wifi
+  ssid:
+    name: 'Connected SSID'
+    icon: mdi:wifi
+
+button:
+- platform: restart
+  name: 'Restart'
+
+output:
+- platform: gpio
+  id: output_led
+  pin: ${led_pin}
+
+light:
+- platform: binary
+  internal: true
+  id: light_led
+  output: output_led
