@@ -47,6 +47,7 @@ sensor:
   icon: mdi:flash-outline
 
   pin: '${pulse_pin}'
+  internal_filter: 5ms
 
   state_class: measurement
   device_class: power
