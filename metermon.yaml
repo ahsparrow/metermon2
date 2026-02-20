@@ -11,12 +11,6 @@ esphome:
 rp2040:
   board: rpipicow
 
-# XXX Test only
-#esp32:
-#  variant: esp32
-#  framework:
-#    type: esp-idf
-
 # Enable logging
 logger:
 
@@ -33,11 +27,6 @@ wifi:
   ssid: !secret wifi-network
   password: !secret wifi-password
   reboot_timeout: 5min
-
-  # Enable fallback hotspot in case wifi connection fails
-  ap:
-    ssid: '${friendly_name} Fallback Hotspot'
-    password: !secret hotspot-password
 
 sensor:
 - platform: pulse_meter
