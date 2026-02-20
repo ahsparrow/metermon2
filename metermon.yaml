@@ -54,7 +54,7 @@ sensor:
   unit_of_measurement: W
   accuracy_decimals: 0
   filters:
-  - multiply: 15 # (60s / 4000) * (1000W / 1kW)
+  - multiply: 30 # (60s / 2000) * (1000W / 1kW)
   - throttle_average: 5s
 
   on_raw_value:
@@ -71,7 +71,7 @@ sensor:
     device_class: energy
     accuracy_decimals: 0
     filters:
-    - multiply: 0.25 # 1000 Wh / 4000
+    - multiply: 0.5 # 1000 Wh / 2000
     - throttle: 5min
 
 - platform: wifi_signal
